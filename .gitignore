@@ -1,32 +1,56 @@
+# Node modules
+node_modules/
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.tanstack/**
-.nitro
-*.local
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Wrangler / Cloudflare
-.wrangler/
-.dev.vars
+# Environment variables
+.env
+.env.*
+!.env.example
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Build / output
+dist/
+build/
+out/
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript
+*.tsbuildinfo
+
+# OS files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# Coverage
+coverage/
+
+# Temp files
+tmp/
+temp/
+
+# Debug
+*.tgz
+
+# Docker
+.dockerignore
+
+# Misc
+*.local
