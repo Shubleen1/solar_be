@@ -12,16 +12,18 @@ const app = express();
 connectDB();
 
 // ── Middleware ─────────────────────────────────
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+//   credentials: true,
+// }));
+app.use(cors());
 app.use(express.json());
 
 // ── Routes ─────────────────────────────────────
 app.use('/api/auth',     require('./routes/auth'));     
 app.use('/api/referral', require('./routes/referral')); 
-app.use('/api/leads',    require('./routes/leads'));    
+app.use('/api/leads',    require('./routes/leads')); 
+app.use('/queries',  require('./routes/queries'));    
 app.use('/api/user',     require('./routes/user'));   
 app.use('/api/admin',    require('./routes/admin')); // Points to admin.js
 
