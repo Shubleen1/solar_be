@@ -22,12 +22,27 @@ router.post('/submit', async (req, res) => {
     } = req.body;
 
     // 1. Validate required fields
-    if (!customerName || !customerPhone || !customerCity || !referralCode) {
-      return res.status(400).json({ message: 'Please fill all required fields' });
-    }
+   if (!customerName || !customerPhone || !customerCity) {
+  return res.status(400).json({ message: 'Please fill all required fields' });
+}
+
+let referrer = null;
+
+if (referralCode) {
+  referrer = await User.findOne({
+    referralCode: referralCode.toUpperCase(),
+  });
+
+  if (!referrer) {
+    return res.status(400).json({
+      message: 'Invalid referral code',
+    });
+  }
+}
+    
 
     // 2. Find who owns this referral code
-    const referrer = await User.findOne({ referralCode: referralCode.toUpperCase() });
+    
     if (!referrer) {
       return res.status(400).json({ message: 'Invalid referral code. Please check and try again.' });
     }
@@ -51,17 +66,18 @@ router.post('/submit', async (req, res) => {
       customerCity,
       propertyType: propertyType || 'home',
       message: message || '',
-      referralCode: referralCode.toUpperCase(),
-      referrerId: referrer._id,
+      referralCode: referralCode ? referralCode.toUpperCase() : null,
+referrerId: referrer ? referrer._id : null,
       commissionPercent: Number(process.env.COMMISSION_PERCENT) || 5,
     });
 
     // 5. Update referrer's lead count
-    await User.findByIdAndUpdate(referrer._id, { $inc: { totalLeads: 1 } });
+    if (referrer) {
+  await User.findByIdAndUpdate(referrer._id, { $inc: { totalLeads: 1 } });
 
-    // 6. Email the referrer to tell them someone used their code
-    const emailTemplate = newLeadEmail(referrer.name, customerName, customerCity);
-    await sendEmail({ to: referrer.email, ...emailTemplate });
+  const emailTemplate = newLeadEmail(referrer.name, customerName, customerCity);
+  await sendEmail({ to: referrer.email, ...emailTemplate });
+}
 
     res.status(201).json({
       message: '✅ Inquiry submitted successfully! Our team will contact you within 24 hours.',

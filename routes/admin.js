@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Lead = require('../models/Lead');
 const User = require('../models/User');
-const { protect, adminOnly } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 const { sendEmail, commissionEmail } = require('../utils/sendEmail');
 
 // Every admin route requires: logged in + role = 'admin'

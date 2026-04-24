@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Lead = require('../models/Lead');
 const User = require('../models/User');
-const { protect } = require('../middleware/auth');
+const { protect } = require('../middleware/authMiddleware');
 
 // All routes here require login
 router.use(protect);
