@@ -1,4 +1,4 @@
-const query = require('../models/query');
+const Query = require('../models/Query');
 
 const submitQuery = async (data) => {
   const { name, phone, email, projectType, message } = data;
