@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const querySchema = new mongoose.Schema(
+const QuerySchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -27,4 +27,4 @@ const querySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Query', querySchema);
+module.exports = mongoose.model('Query', QuerySchema);
