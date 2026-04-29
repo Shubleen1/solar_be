@@ -4,25 +4,37 @@ const QuerySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      trim: true
+      required: [true, 'Name is required'],
+      trim: true,
+      minlength: 2,
     },
+
     phone: {
       type: String,
-      required: true
+      required: [true, 'Phone number is required'],
+      match: [/^[0-9]{10}$/, 'Enter valid 10-digit phone number'],
     },
+
     email: {
       type: String,
-      default: ''
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Enter valid email'],
+      default: '',
     },
+
     projectType: {
       type: String,
-      default: 'Residential'
+      enum: ['Residential', 'Commercial', 'Industrial'],
+      default: 'Residential',
     },
+
     message: {
       type: String,
-      default: ''
-    }
+      trim: true,
+      maxlength: 500,
+      default: '',
+    },
   },
   { timestamps: true }
 );

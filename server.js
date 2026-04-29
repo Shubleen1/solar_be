@@ -25,7 +25,7 @@ app.use('/referral', require('./routes/referral'));
 app.use('/leads',    require('./routes/leads')); 
 app.use('/queries',  require('./routes/query'));    
 app.use('/user',     require('./routes/user'));   
-app.use('/admin',    require('./routes/admin')); // Points to admin.js
+// app.use('/admin',    require('./routes/admin')); // Points to admin.js
 
 // ── Health check ───────────────────────────────
 app.get('/', (req, res) => {
