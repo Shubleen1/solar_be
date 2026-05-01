@@ -4,7 +4,7 @@ const { generateReferralCode } = require('../utils/generateCode');
 const { sendEmail, welcomeEmail } = require('../utils/sendEmail');
 
 const registerUser = async (userData) => {
-  const { name, email, phone, password, referredBy } = userData;
+  const { name, email, phone, password, role, referredBy } = userData;
 
   if (!name || !email || !phone || !password) throw new Error('Please fill all required fields');
   if (password.length < 6) throw new Error('Password must be at least 6 characters');
@@ -24,6 +24,7 @@ const registerUser = async (userData) => {
     email,
     phone,
     password,
+    role,
     referralCode,
     referredBy: referredBy ? referredBy.toUpperCase() : null,
   });

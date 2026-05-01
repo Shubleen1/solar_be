@@ -1,4 +1,7 @@
-const { submitQuery } = require('../services/queryService');
+const {
+  submitQuery,
+  getAllQueries
+} = require('../services/queryService');
 
 const submit = async (req, res) => {
   try {
@@ -10,12 +13,30 @@ const submit = async (req, res) => {
     });
 
   } catch (err) {
-    console.error('Lead error:', err);
-
     res.status(400).json({
       message: err.message || 'Something went wrong'
     });
   }
 };
 
-module.exports = { submit };
+const getAll = async (req, res) => {
+  try {
+    const queries = await getAllQueries();
+
+    res.status(200).json({
+      success: true,
+      count: queries.length,
+      data: queries
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: 'Failed to fetch queries'
+    });
+  }
+};
+
+module.exports = {
+  submit,
+  getAll
+};
