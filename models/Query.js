@@ -35,6 +35,11 @@ const QuerySchema = new mongoose.Schema(
       maxlength: 500,
       default: '',
     },
+    status: {
+      type: String,
+      enum: ['New','Contacted', 'Resolved', 'Closed'],
+      default: 'New',
+    },
   },
   { timestamps: true }
 );
