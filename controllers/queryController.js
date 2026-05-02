@@ -29,7 +29,7 @@ const getAll = async (req, res) => {
   }
 };
 
-const updateQueryStatus= async(req,res)=>{
+const updateQuery= async(req,res)=>{
   try{
     const{id}=req.params;
     const{status}=req.body;
@@ -45,7 +45,7 @@ const updateQueryStatus= async(req,res)=>{
   }
 };
 
-const deleteQuery = async (req, res) => {
+const deleteQ = async (req, res) => {
   try {
     const { id } = req.params;
     await deleteQuery(id);
@@ -63,6 +63,6 @@ const deleteQuery = async (req, res) => {
 module.exports = {
   submit,
   getAll,
-  updateQueryStatus,
-  deleteQuery
+  updateQuery,
+  deleteQ
 };
