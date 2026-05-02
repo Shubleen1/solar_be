@@ -7,6 +7,6 @@ const { submit, getAll,updateQuery, deleteQ } = require('../controllers/queryCon
 // POST route for contact/inquiry
 router.post('/save', submit);
 router.get('/', getAll);
-router.put('/status/:id', updateQuery);
+router.patch('/:id', updateQuery);
 router.delete('/:id', deleteQ);
 module.exports = router;

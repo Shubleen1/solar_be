@@ -1,10 +1,12 @@
 const Query = require('../models/Query');
+const paginate = require('../utils/paginate');
+const MESSAGES = require('../constants/messages');
 
 const submitQuery = async (data) => {
   const { name, phone, email, projectType, message } = data;
 
   if (!name || !phone) {
-    throw new Error('Name and phone are required');
+    throw new Error(MESSAGES.COMMON.BAD_REQUEST);
   }
 
   return await Query.create({
@@ -16,32 +18,57 @@ const submitQuery = async (data) => {
   });
 };
 
-const getAllQueries = async () => {
-  return await Query.find().sort({ createdAt: -1 });
+const getAllQueries = async (params) => {
+  const { page, limit, search, status } = params;
+
+  const filter = {};
+
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } },
+      { phone: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  if (status && status !== 'all') {
+    filter.status = status;
+  }
+
+  return await paginate(Query, filter, { page, limit });
 };
 
 const updateQueryStatus = async (id, status) => {
   const validStatuses = ['New', 'Contacted', 'Resolved', 'Closed'];
+
   if (!validStatuses.includes(status)) {
-    throw new Error('Invalid status');
+    throw new Error(MESSAGES.QUERY.INVALID_STATUS);
   }
+
   const query = await Query.findById(id);
   if (!query) {
-    throw new Error('Query not found');
-  } else {
-    query.status = status;
-    await query.save();
-    return query;
+    throw new Error(MESSAGES.QUERY.NOT_FOUND);
   }
+
+  query.status = status;
+  await query.save();
+
+  return query;
 };
 
 const deleteQuery = async (id) => {
-  return await Query.findByIdAndDelete(id);
+  const query = await Query.findByIdAndDelete(id);
+
+  if (!query) {
+    throw new Error(MESSAGES.QUERY.NOT_FOUND);
+  }
+
+  return query;
 };
 
 module.exports = {
   submitQuery,
   getAllQueries,
-  deleteQuery,
-  updateQueryStatus
+  updateQueryStatus,
+  deleteQuery
 };
