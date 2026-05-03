@@ -20,10 +20,11 @@ app.use(cors());
 app.use(express.json());
 
 // ── Routes ─────────────────────────────────────
-app.use('/auth',     require('./routes/auth'));     
+app.use('/auth',     require('./routes/auth'));  
+app.use('/queries',  require('./routes/query'));    
+
 app.use('/referral', require('./routes/referral')); 
 app.use('/leads',    require('./routes/leads')); 
-app.use('/queries',  require('./routes/query'));    
 app.use('/user',     require('./routes/user'));   
 // app.use('/admin',    require('./routes/admin')); // Points to admin.js
 

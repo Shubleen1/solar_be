@@ -1,34 +1,55 @@
 const User = require('../models/User');
-const Lead = require('../models/Lead');
+const paginate = require('../utils/paginate');
 
-const getUserDashboardData = async (userId, frontendUrl) => {
-  const user = await User.findById(userId).select('-password');
-  const leads = await Lead.find({ referrerId: userId }).sort({ createdAt: -1 });
+// GET ALL USERS (WITH PAGINATION)
+const getAllUsers = async (queryParams) => {
+  const { page, limit, search } = queryParams;
 
-  const stats = {
-    totalLeads: leads.length,
-    pendingLeads: leads.filter(l => l.projectStatus === 'pending').length,
-    installedLeads: leads.filter(l => l.projectStatus === 'installed').length,
-    cancelledLeads: leads.filter(l => l.projectStatus === 'cancelled').length,
-    totalEarnings: user.totalEarnings,
-    pendingEarnings: user.pendingEarnings,
-  };
+  let query = {};
 
-  return {
-    user: {
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      referralCode: user.referralCode,
-      referralLink: `${frontendUrl}/register?ref=${user.referralCode}`,
-    },
-    stats,
-    leads,
-  };
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } },
+      { phone: { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  return paginate(User, query, {
+    page: Number(page) || 1,
+    limit: Number(limit) || 10,
+  });
 };
 
-const getUserProfileData = async (userId) => {
-  return await User.findById(userId).select('-password');
+// GET SINGLE USER
+const getUserById = async (id) => {
+  const user = await User.findById(id);
+  if (!user) throw new Error('User not found');
+  return user;
 };
 
-module.exports = { getUserDashboardData, getUserProfileData };
+// UPDATE USER
+const updateUser = async (id, updateData) => {
+  const user = await User.findByIdAndUpdate(
+    id,
+    updateData,
+    { new: true, runValidators: true }
+  );
+
+  if (!user) throw new Error('User not found');
+  return user;
+};
+
+// DELETE USER
+const deleteUser = async (id) => {
+  const user = await User.findByIdAndDelete(id);
+  if (!user) throw new Error('User not found');
+  return true;
+};
+
+module.exports = {
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+};

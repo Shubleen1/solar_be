@@ -1,22 +1,103 @@
-const userService = require('../services/userService');
+const {
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser
+} = require('../services/userService');
 
-const getDashboard = async (req, res) => {
+const HTTP_STATUS = require('../constants/httpStatus');
+const MESSAGES = require('../constants/messages');
+const sendResponse = require('../utils/response');
+
+// GET ALL USERS
+const getAll = async (req, res) => {
   try {
-    const data = await userService.getUserDashboardData(req.user._id, process.env.FRONTEND_URL);
-    res.json(data);
+    const result = await getAllUsers(req.query);
+
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.OK,
+      message: "Users fetched successfully",
+      data: result.data,
+      meta: result.pagination
+    });
+
   } catch (err) {
-    console.error('Dashboard error:', err);
-    res.status(500).json({ message: 'Server error' });
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      success: false,
+      message: MESSAGES.COMMON.SERVER_ERROR
+    });
   }
 };
 
-const getProfile = async (req, res) => {
+// GET SINGLE USER
+const getOne = async (req, res) => {
   try {
-    const user = await userService.getUserProfileData(req.user._id);
-    res.json(user);
+    const { id } = req.params;
+
+    const user = await getUserById(id);
+
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.OK,
+      message: "User fetched successfully",
+      data: user
+    });
+
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.NOT_FOUND,
+      success: false,
+      message: err.message
+    });
   }
 };
 
-module.exports = { getDashboard, getProfile };
+// UPDATE USER
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedUser = await updateUser(id, req.body);
+
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.OK,
+      message: "User updated successfully",
+      data: updatedUser
+    });
+
+  } catch (err) {
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.BAD_REQUEST,
+      success: false,
+      message: err.message || MESSAGES.COMMON.SERVER_ERROR
+    });
+  }
+};
+
+// DELETE USER
+const remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await deleteUser(id);
+
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.OK,
+      message: "User deleted successfully"
+    });
+
+  } catch (err) {
+    return sendResponse(res, {
+      statusCode: HTTP_STATUS.BAD_REQUEST,
+      success: false,
+      message: err.message || MESSAGES.COMMON.SERVER_ERROR
+    });
+  }
+};
+
+module.exports = {
+  getAll,
+  getOne,
+  update,
+  remove
+};
