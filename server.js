@@ -12,12 +12,13 @@ const app = express();
 connectDB();
 
 // ── Middleware ─────────────────────────────────
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-//   credentials: true,
-// }));
 app.use(cors());
 app.use(express.json());
+
+// ✅ FIXED HERE
+app.get('/test', (req, res) => {
+  res.send("Test route working");
+});
 
 // ── Routes ─────────────────────────────────────
 app.use('/auth',     require('./routes/auth'));     
@@ -25,7 +26,8 @@ app.use('/referral', require('./routes/referral'));
 app.use('/leads',    require('./routes/leads')); 
 app.use('/queries',  require('./routes/query'));    
 app.use('/user',     require('./routes/user'));   
-// app.use('/admin',    require('./routes/admin')); // Points to admin.js
+app.use('/payments', require('./routes/payments'));
+app.use('/customers', require('./routes/customers'));
 
 // ── Health check ───────────────────────────────
 app.get('/', (req, res) => {
@@ -44,5 +46,4 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`\n✅ Server running at http://localhost:${PORT}`);
-  console.log(`📋 API docs at   http://localhost:${PORT}/\n`);
 });

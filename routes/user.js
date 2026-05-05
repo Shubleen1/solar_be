@@ -7,5 +7,8 @@ router.use(protect);
 
 router.get('/dashboard', userController.getDashboard);
 router.get('/profile', userController.getProfile);
+router.get('/all', userController.allUsers);
+router.get('/:id', userController.getUserById);
+router.delete('/:id', userController.deleteUserById);
 
 module.exports = router;
